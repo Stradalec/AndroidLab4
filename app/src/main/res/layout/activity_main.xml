@@ -10,4 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Get via HTTP"/>
+    <Button
+        android:id="@+id/btnOkHTTP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get via OkHTTP"/>
 </LinearLayout>
