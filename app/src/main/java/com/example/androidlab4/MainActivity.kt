@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         var recyclerView: RecyclerView = findViewById(R.id.rView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        var limit = 0;
         var colorList:ArrayList<ColorData> = ArrayList()
         colorList.add(ColorData("Red", "#FF0000"))
         colorList.add(ColorData("Dark Green", "#038d00"))
@@ -29,12 +30,23 @@ class MainActivity : AppCompatActivity() {
         colorList.add(ColorData("Yellow", "#ffff00"))
         colorList.add(ColorData("Gray", "#212500"))
         colorList.add(ColorData("Blue", "#2125f0"))
-        colorList.add(ColorData("Violet", "#ff0000"))
+        colorList.add(ColorData("Violet", "#451048"))
         colorList.add(ColorData("Black", "#000000"))
+        while (limit < 10) {
+            AddRandomColor(colorList)
+            ++limit
+        }
+
 
         var adapter = MyAdapter(this, colorList)
         recyclerView.adapter = adapter
     }
+}
+
+private fun AddRandomColor(array: ArrayList<ColorData>){
+    var  limit = array.size
+    var random = (0..limit).random()
+    array.add(array[random])
 }
 
 data class ColorData(
