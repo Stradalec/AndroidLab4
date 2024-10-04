@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Adapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,7 +15,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity(), CellClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,11 +40,24 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        var adapter = MyAdapter(this, colorList)
+        var adapter = MyAdapter(this, colorList, this)
         recyclerView.adapter = adapter
+    }
+
+    override fun onCellClickListener(inputColor: String) {
+        if (inputColor == "Violet") {
+            Toast.makeText(this, "Let's Be Friends", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            Toast.makeText(this, "IT’S $inputColor", Toast.LENGTH_SHORT).show()
+        }
+
     }
 }
 
+interface CellClickListener{
+    fun  onCellClickListener(inputColor: String)
+}
 private fun AddRandomColor(array: ArrayList<ColorData>){
     var  limit = array.size
     var random = (0..limit).random()
@@ -53,7 +68,7 @@ data class ColorData(
     val colorName: String,
     val colorHex: String
 )
-class MyAdapter(private val context: Context, private val list: ArrayList<ColorData>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+class MyAdapter(private val context: Context, private val list: ArrayList<ColorData>, private  val cellClickListener: CellClickListener) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var picture: View? = null;
         var smallTextView: TextView? = null;
@@ -76,6 +91,9 @@ class MyAdapter(private val context: Context, private val list: ArrayList<ColorD
         val colorData = list[position]
         holder.smallTextView?.text = colorData.colorName
         holder.picture?.setBackgroundColor(android.graphics.Color.parseColor(colorData.colorHex))
+        holder.itemView.setOnClickListener {
+            cellClickListener.onCellClickListener(colorData.colorName)
+        }
     }
 }
 
