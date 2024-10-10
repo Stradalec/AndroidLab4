@@ -16,10 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
-class MainActivity : AppCompatActivity(), CellClickListener {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         var recyclerView: RecyclerView = findViewById(R.id.rView)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -40,11 +39,18 @@ class MainActivity : AppCompatActivity(), CellClickListener {
         }
 
 
-        var adapter = MyAdapter(this, colorList, this)
+        var adapter = MyAdapter(this, colorList) { inputColor ->
+            if (inputColor == "Violet") {
+                Toast.makeText(this, "Let's Be Friends", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                Toast.makeText(this, "IT’S $inputColor", Toast.LENGTH_SHORT).show()
+            }
+        }
         recyclerView.adapter = adapter
     }
 
-    override fun onCellClickListener(inputColor: String) {
+    /*override fun onCellClickListener(inputColor: String) {
         if (inputColor == "Violet") {
             Toast.makeText(this, "Let's Be Friends", Toast.LENGTH_SHORT).show()
         }
@@ -52,12 +58,12 @@ class MainActivity : AppCompatActivity(), CellClickListener {
             Toast.makeText(this, "IT’S $inputColor", Toast.LENGTH_SHORT).show()
         }
 
-    }
+    }*/
 }
 
-interface CellClickListener{
+/*interface CellClickListener{
     fun  onCellClickListener(inputColor: String)
-}
+}*/
 private fun AddRandomColor(array: ArrayList<ColorData>){
     var  limit = array.size
     var random = (0..limit).random()
@@ -68,8 +74,8 @@ data class ColorData(
     val colorName: String,
     val colorHex: String
 )
-class MyAdapter(private val context: Context, private val list: ArrayList<ColorData>, private  val cellClickListener: CellClickListener) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+class MyAdapter(private val context: Context, private val list: ArrayList<ColorData>,private val cellClickListener: (String) -> Unit) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+    class ViewHolder(itemView: View, cellClickListener: (String) -> Unit) : RecyclerView.ViewHolder(itemView){
         var picture: View? = null;
         var smallTextView: TextView? = null;
         init {
@@ -80,7 +86,7 @@ class MyAdapter(private val context: Context, private val list: ArrayList<ColorD
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.rview_item,parent,false)
-        return  ViewHolder(itemView)
+        return  ViewHolder(itemView, cellClickListener)
     }
 
     override fun getItemCount(): Int {
@@ -92,7 +98,7 @@ class MyAdapter(private val context: Context, private val list: ArrayList<ColorD
         holder.smallTextView?.text = colorData.colorName
         holder.picture?.setBackgroundColor(android.graphics.Color.parseColor(colorData.colorHex))
         holder.itemView.setOnClickListener {
-            cellClickListener.onCellClickListener(colorData.colorName)
+            cellClickListener(colorData.colorName)
         }
     }
 }
